@@ -3,12 +3,11 @@ import numpy as np
 
 
 def vis_segmentation_cv(resized_im=None, res_img=None):
-    image.show(res_img)
     # if resized_im is not None:
     #     blended_img = blend_img_and_mask(resized_im, res_img)
     #     image.show(blended_img)
     # else:
-    #     image.show(res_img)
+    image.show(res_img)
 
 
 def blend_img_and_mask(resized_im, res_img):
