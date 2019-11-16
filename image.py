@@ -12,7 +12,7 @@ def load_img(path):
 
 def show(img):
     cv2.imshow("Image", img)
-    cv2.waitKey(0)
+    cv2.waitKey(1)
 
 
 def get_cv2_img(img_pil):
