@@ -1,12 +1,23 @@
 import detect
 import visualization
-from camera import Camera
+from web_camera import Camera
 import image
 import os
+from spy_camera import OpenCVCam
 
 detect_H = True
 
-def case_camera(model):
+
+def case_spy_cameras(model):
+    cam1 = OpenCVCam("rtsp://10.100.43.15:554/stander/livestream/0/0")
+    cam2 = OpenCVCam("rtsp://10.100.43.16:554/stander/livestream/0/0")
+    while True:
+        original_im = cam1.get_image()
+        resized_im, seg_map = model.run(original_im)
+        res_img = detect.detecting(resized_im, seg_map, H=True)
+        visualization.vis_segmentation_cv(res_img)
+
+def case_web_camera(model):
     cam = Camera()
     while True:
         original_im = cam.get_image()
