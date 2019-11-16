@@ -17,20 +17,11 @@ model = DeepLabModel(models["mobnet"])
 # cases.case_web_camera(model)
 
 
-# img_path = "images/one_H_P.jpg"
-# cases.case_image(model, img_path)
+# img_path = "man_dataset/form/c474c227-b16b-4eec-943a-d698e0162007.jpg"
+# cases.case_test_image(img_path)
 
 # cases.case_images(model)
 
 # cases.case_spy_cameras(model)
 
 cases.case_video(model)
-
-
-# cam1 = OpenCVCam("rtsp://10.100.43.15:554/stander/livestream/0/0")
-# cam2 = OpenCVCam("rtsp://10.100.43.16:554/stander/livestream/0/0")
-
-# process1 = Thread(target=cases.case_write_video, args=("cam1", cam1))
-# process1.run()
-# process2 = Thread(target=cases.case_write_video, args=("cam2", cam2))
-# process2.run()

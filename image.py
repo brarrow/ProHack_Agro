@@ -50,3 +50,22 @@ def cut_holst_from_bin_roi(holst, img, padding=0):
     seg_map = holst[minx:maxx, miny:maxy]
     img = img[minx:maxx, miny:maxy]
     return bitwise_images(img, seg_map)
+
+
+def get_white_regions(img, tr=110):
+    gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    blurred = cv2.GaussianBlur(gray, (11, 11), 0)
+    thresh = cv2.threshold(blurred, tr, 255, cv2.THRESH_BINARY)[1]
+    thresh = cv2.erode(thresh, None, iterations=2)
+    thresh = cv2.dilate(thresh, None, iterations=4)
+    return thresh
+
+
+def crop_bottom_part(img, part):
+    cropped_img = img[img.shape[0]//part:img.shape[0]]
+    return cropped_img
+
+
+def crop_top_part(img, part):
+    cropped_img = img[0:img.shape[0]//part]
+    return cropped_img

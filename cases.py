@@ -2,7 +2,6 @@ import detect
 import visualization
 from detect import segm_person
 from image import cut_holst_from_bin_roi
-from web_camera import Camera
 import image
 import os
 from spy_camera import OpenCVCam
@@ -14,9 +13,6 @@ detect_H = True
 
 
 def case_spy_cameras(model):
-    if not os.path.exists("man_dataset"):
-        os.mkdir("man_dataset")
-
     cam1 = OpenCVCam("rtsp://10.100.43.15:554/stander/livestream/0/0")
     cam2 = OpenCVCam("rtsp://10.100.43.16:554/stander/livestream/0/0")
     print("In cycle, stream.")
@@ -26,22 +22,18 @@ def case_spy_cameras(model):
 
 
 def case_video(model):
-    vid = OpenCVCam("videos/no_glass_no_helmet/cam2.avi")
-    while vid.cap.isOpened():
-        segm_person(model, vid)
-        # original_im = vid.get_image()
-        # resized_im, seg_map = model.run(original_im)
-        # res_img = detect.detecting(resized_im, seg_map, H=True)
-        # visualization.vis_segmentation_cv(resized_im, res_img)
-
-
-def case_web_camera(model):
-    cam = Camera()
-    while True:
-        original_im = cam.get_image()
-        resized_im, seg_map = model.run(original_im)
-        res_img = detect.detecting(resized_im, seg_map, H=True)
-        visualization.vis_segmentation_cv(resized_im, res_img)
+    # path_to_video = os.path.join("videos", "no_glass", "cam1.avi") # helmet
+    path_to_video = os.path.join("videos", "igor", "cam1.avi")  # no helmet
+    if not os.path.exists(path_to_video):
+        print("Wrong path: ", path_to_video)
+        return
+    vid = cv2.VideoCapture(path_to_video)
+    while vid.isOpened():
+        seg_person = segm_person(model, vid)
+        if seg_person is None:
+            continue
+        detect.detect_helmets(seg_person)
+        image.show(seg_person)
 
 
 def case_image(model, img_path):
@@ -49,6 +41,11 @@ def case_image(model, img_path):
     resized_im, seg_map = model.run(original_im)
     res_img = detect.detecting(resized_im, seg_map, H=True)
     visualization.vis_segmentation_cv(resized_im, res_img)
+
+
+def case_test_image(seg_person_path):
+    seg_person = image.load_img(seg_person_path)
+    detect.detect_helmets(seg_person)
 
 
 def case_images(model):
