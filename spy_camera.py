@@ -1,6 +1,4 @@
 import cv2
-import numpy as np
-import time
 
 
 class OpenCVCam(object):
@@ -14,9 +12,6 @@ class OpenCVCam(object):
             self.cap = cv2.VideoCapture(self.video_source)
             _, res = self.cap.read()
         return cv2.cvtColor(res, cv2.COLOR_BGR2RGB)
-
-    def grab(self):
-        pass
 
 
 if __name__ == "__main__":

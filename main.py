@@ -17,3 +17,5 @@ model = DeepLabModel(models["mobnet"])
 # cases.case_images(model)
 
 cases.case_spy_cameras(model)
+
+# cases.case_video_cameras(model)

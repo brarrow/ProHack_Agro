@@ -30,3 +30,7 @@ def detecting(resized_im, seg_map, N=False,  H=False, P=False, G=False):
 def detect_helmets(person):
 
     return person.H
+
+
+def cut_head(person):
+    pass

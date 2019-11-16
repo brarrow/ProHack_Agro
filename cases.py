@@ -15,7 +15,19 @@ def case_spy_cameras(model):
         original_im = cam1.get_image()
         resized_im, seg_map = model.run(original_im)
         res_img = detect.detecting(resized_im, seg_map, H=True)
-        visualization.vis_segmentation_cv(res_img)
+        visualization.vis_segmentation_cv(res_img=res_img)
+        # visualization.vis_segmentation_cv(resized_im, res_img)
+
+
+def case_video(model):
+    vid = OpenCVCam("videos/1.avi")
+    while True:
+        original_im = vid.get_image()
+        resized_im, seg_map = model.run(original_im)
+        res_img = detect.detecting(resized_im, seg_map, H=True)
+        visualization.vis_segmentation_cv(res_img=res_img)
+        # visualization.vis_segmentation_cv(resized_im, res_img)
+
 
 def case_web_camera(model):
     cam = Camera()
@@ -23,14 +35,14 @@ def case_web_camera(model):
         original_im = cam.get_image()
         resized_im, seg_map = model.run(original_im)
         res_img = detect.detecting(resized_im, seg_map, H=True)
-        visualization.vis_segmentation_cv(res_img)
+        visualization.vis_segmentation_cv(resized_im, res_img)
 
 
 def case_image(model, img_path):
     original_im = image.load_img(img_path)
     resized_im, seg_map = model.run(original_im)
     res_img = detect.detecting(resized_im, seg_map, H=True)
-    visualization.vis_segmentation_cv(res_img)
+    visualization.vis_segmentation_cv(resized_im, res_img)
 
 
 def case_images(model):
@@ -39,4 +51,7 @@ def case_images(model):
         original_im = image.load_img(os.path.join(rel_path, f))
         resized_im, seg_map = model.run(original_im)
         res_img = detect.detecting(resized_im, seg_map, H=True)
-        visualization.vis_segmentation_cv(res_img)
+        visualization.vis_segmentation_cv(resized_im, res_img)
+
+
+
