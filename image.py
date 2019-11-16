@@ -25,8 +25,6 @@ def get_pil_img(img_cv):
 
 
 def bitwise_images(img, mask):
-    # 15 - person category
-    mask = mask == 15
     mask = get_cv2_img(mask)
     masked_img = cv2.bitwise_and(img, img, mask=mask)
     return masked_img
