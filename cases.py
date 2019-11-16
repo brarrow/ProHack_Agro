@@ -17,9 +17,11 @@ def case_spy_cameras(model):
     cam2 = OpenCVCam("rtsp://10.100.43.16:554/stander/livestream/0/0")
     print("In cycle, stream.")
     while True:
+       start_time = time.time()
        segm_person(model, cam1, "res_img1")
        segm_person(model, cam2, "res_img2")
-
+       end_time = time.time()
+       print("Inference time: ", end_time - start_time)
 
 def case_video(model):
     # path_to_video = os.path.join("videos", "no_glass", "cam1.avi") # helmet
