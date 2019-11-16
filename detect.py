@@ -33,4 +33,5 @@ def detect_helmets(person):
 
 
 def cut_head(person):
+
     pass

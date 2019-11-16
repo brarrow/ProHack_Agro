@@ -4,6 +4,9 @@ from web_camera import Camera
 import image
 import os
 from spy_camera import OpenCVCam
+import cv2
+import time
+
 
 detect_H = True
 
@@ -20,13 +23,12 @@ def case_spy_cameras(model):
 
 
 def case_video(model):
-    vid = OpenCVCam("videos/1.avi")
+    vid = OpenCVCam("videos/no_glass_no_helmet/cam2.avi")
     while True:
         original_im = vid.get_image()
         resized_im, seg_map = model.run(original_im)
         res_img = detect.detecting(resized_im, seg_map, H=True)
-        visualization.vis_segmentation_cv(res_img=res_img)
-        # visualization.vis_segmentation_cv(resized_im, res_img)
+        visualization.vis_segmentation_cv(resized_im, res_img)
 
 
 def case_web_camera(model):
@@ -54,4 +56,25 @@ def case_images(model):
         visualization.vis_segmentation_cv(resized_im, res_img)
 
 
+def case_write_video(name, cap):
 
+    # Define the codec and create VideoWriter object
+    fourcc = cv2.VideoWriter_fourcc(*'DIVX')
+    out = cv2.VideoWriter('{}.avi'.format(name), fourcc, 20.0, (1920,1080))
+    # out = cv2.VideoWriter('output.avi', -1, 20.0, (640, 480))
+    start_time = time.time()
+    while time.time() - start_time < 40:
+        frame = cap.get_image()
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+        # write the flipped frame
+        out.write(frame)
+
+        # cv2.imshow('frame', frame)
+        # if cv2.waitKey(1) & 0xFF == ord('q'):
+        #     break
+
+    # Release everything if job is finished
+    # cap.release()
+    out.release()
+    cv2.destroyAllWindows()
