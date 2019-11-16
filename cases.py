@@ -24,8 +24,8 @@ def case_spy_cameras(model):
        print("Inference time: ", end_time - start_time)
 
 def case_video(model):
-    # path_to_video = os.path.join("videos", "no_glass", "cam1.avi") # helmet
-    path_to_video = os.path.join("videos", "igor", "cam1.avi")  # no helmet
+    path_to_video = os.path.join("videos", "no_glass", "cam1.avi") # helmet
+    # path_to_video = os.path.join("videos", "igor", "cam1.avi")  # no helmet
     if not os.path.exists(path_to_video):
         print("Wrong path: ", path_to_video)
         return
@@ -35,6 +35,7 @@ def case_video(model):
         if seg_person is None:
             continue
         detect.detect_helmets(seg_person)
+        detect.detect_costume(seg_person)
         image.show(seg_person)
 
 
@@ -47,8 +48,9 @@ def case_image(model, img_path):
 
 def case_test_image(seg_person_path):
     seg_person = image.load_img(seg_person_path)
-    detect.detect_helmets(seg_person)
-
+    seg_person = cv2.cvtColor(seg_person, cv2.COLOR_BGR2RGB)
+    # detect.detect_helmets(seg_person)
+    detect.detect_costume(seg_person)
 
 def case_images(model):
     rel_path = "images"

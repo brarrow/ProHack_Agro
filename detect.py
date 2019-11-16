@@ -7,6 +7,7 @@ import image
 from status import Status
 from persons import Person
 import uuid
+import detect_shapes
 status_ = Status()
 
 
@@ -36,9 +37,19 @@ def detect_helmets(seg_person):
     tmp = seg_person.copy()
     tmp = image.crop_top_part(tmp, 16)
     tmp = image.get_white_regions(tmp)
-    print(np.sum(tmp)/(tmp.shape[0] * tmp.shape[1] * 3))
+    # print(np.sum(tmp)/(tmp.shape[0] * tmp.shape[1] * 3))
     if 11 < np.sum(tmp)/(tmp.shape[0] * tmp.shape[1] * 3) < 25:
         print("YES! HELMET!")
+        return True
+    else:
+        return False
+
+
+def detect_costume(seg_person):
+    tmp = seg_person.copy()
+    tmp = image.crop_middle_part(tmp, 5, 5)
+    if detect_shapes.get_shapes(tmp):
+        print("YES! COSTUME!")
         return True
     else:
         return False

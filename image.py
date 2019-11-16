@@ -69,3 +69,8 @@ def crop_bottom_part(img, part):
 def crop_top_part(img, part):
     cropped_img = img[0:img.shape[0]//part]
     return cropped_img
+
+
+def crop_middle_part(img, top, bottom):
+    cropped_img = img[img.shape[0]//top:img.shape[0] - img.shape[0]//bottom]
+    return cropped_img
