@@ -9,9 +9,8 @@ class OpenCVCam(object):
     def get_image(self):
         _, res = self.cap.read()
         if not _:
-            self.cap = cv2.VideoCapture(self.video_source)
-            _, res = self.cap.read()
-        return cv2.cvtColor(res, cv2.COLOR_BGR2RGB)
+            self.cap.release()
+        return res
 
 
 if __name__ == "__main__":
