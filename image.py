@@ -1,4 +1,6 @@
 from io import BytesIO
+
+import numpy
 from PIL import Image
 import numpy as np
 import cv2
@@ -32,3 +34,19 @@ def bitwise_images(img, mask):
 
 def crop_masked(img_masked):
     img_masked.copy()
+
+
+def cut_holst_from_bin_roi(holst, img, padding=0):
+    nz = np.nonzero(holst)
+    sh = holst.shape
+    minx = min(nz[0]) - padding
+    minx = 0 if minx < 0 else minx
+    maxx = max(nz[0]) + 1 + padding
+    maxx = 0 if maxx > sh[0] else maxx
+    miny = min(nz[1]) - padding
+    miny = 0 if miny < 0 else miny
+    maxy = max(nz[1]) + 1 + padding
+    maxy = 0 if maxy > sh[1] else maxy
+    seg_map = holst[minx:maxx, miny:maxy]
+    img = img[minx:maxx, miny:maxy]
+    return bitwise_images(img, seg_map)
