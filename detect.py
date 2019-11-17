@@ -8,7 +8,7 @@ from status import Status
 from persons import Person
 import uuid
 import detect_shapes
-from spy_camera import OpenCVCam
+from spy_camera import VideoStreamWidget
 from keras.models import load_model
 from keras import backend as K
 import keras
@@ -42,8 +42,8 @@ def detect_helmets(seg_person):
     tmp = seg_person.copy()
     tmp = image.crop_top_part(tmp, 16)
     tmp = image.get_white_regions(tmp)
-    # print(np.sum(tmp)/(tmp.shape[0] * tmp.shape[1] * 3))
-    if 11 < np.sum(tmp)/(tmp.shape[0] * tmp.shape[1] * 3) < 25:
+    print(np.sum(tmp)/(tmp.shape[0] * tmp.shape[1] * 3))
+    if 20 < np.sum(tmp)/(tmp.shape[0] * tmp.shape[1] * 3) < 30:
         print("YES! HELMET!")
         exit()
         return True
@@ -80,7 +80,7 @@ def cut_head(person):
 
 
 def segm_person(model, cam, imshow_name="image"):
-    if isinstance(cam, OpenCVCam):
+    if isinstance(cam, VideoStreamWidget):
         original_im = cam.get_image()
     else:
         _, original_im = cam.read()

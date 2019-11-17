@@ -4,7 +4,7 @@ from detect import segm_person
 from image import cut_holst_from_bin_roi
 import image
 import os
-from spy_camera import OpenCVCam
+from spy_camera import VideoStreamWidget
 import cv2
 import time
 import uuid
@@ -14,25 +14,29 @@ detect_H = True
 
 
 def case_spy_cameras(model):
-    cam1 = OpenCVCam("rtsp://10.100.43.15:554/stander/livestream/0/0")
-    cam2 = OpenCVCam("rtsp://10.100.43.16:554/stander/livestream/0/0")
-    weights_name = 'weights_DNN.hdf5'
+    cam1 = VideoStreamWidget("rtsp://10.100.43.15:554/stander/livestream/0/0")
+    cam2 = VideoStreamWidget("rtsp://10.100.43.16:554/stander/livestream/0/0")
+    weights_name = 'weights_DNN_1.hdf5'
     keras_model = keras.models.load_model(weights_name)
     print("In cycle, stream.")
     while True:
+        # cam1 = OpenCVCam("rtsp://10.100.43.15:554/stander/livestream/0/0")
         start_time = time.time()
+        # print("Here1")
         seg_person = segm_person(model, cam1, "res_img1")
+        # print("Here2")
         if seg_person is None:
             continue
-        # detect.detect_helmets(seg_person)
+        detect.detect_helmets(seg_person)
         # detect.detect_costume(seg_person)
         detect.detect_cnn_costume(seg_person, keras_model)
         image.show(seg_person)
         # segm_person(model, cam2, "res_img2")
         end_time = time.time()
         print("Inference time: ", end_time - start_time)
-        for i in range(3):
-            cam1.cap.grab()
+        # for i in range(2):
+        #     cam1.cap.grab()
+
 
 def case_video(model):
     path_to_video = os.path.join("videos", "no_glass", "cam1.avi") # helmet
@@ -81,7 +85,7 @@ def case_write_video(name, cap):
     out = cv2.VideoWriter('{}.avi'.format(name), fourcc, 20.0, (1920,1080))
     # out = cv2.VideoWriter('output.avi', -1, 20.0, (640, 480))
     start_time = time.time()
-    while time.time() - start_time < 60:
+    while time.time() - start_time < 50:
         frame = cap.get_image()
         # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         image.show(frame)
@@ -100,14 +104,14 @@ def case_write_video(name, cap):
 
 
 def case_segment_video(model):
-    path_to_video = os.path.join("videos", "glass_add")
+    path_to_video = os.path.join("videos", "glass_no")
     for file in os.listdir(path_to_video):
         file_path = os.path.join(path_to_video, file)
         if not os.path.exists(file_path):
             print("Wrong path: ", path_to_video)
             return
         vid = cv2.VideoCapture(file_path)
-        dir_to_save = os.path.join("man_dataset", "glass_add")
+        dir_to_save = os.path.join("man_dataset", "glass_no")
         if not os.path.exists(dir_to_save):
             os.makedirs(dir_to_save)
         while vid.isOpened():
@@ -116,3 +120,14 @@ def case_segment_video(model):
                 continue
             cv2.imwrite(os.path.join(dir_to_save, "{}.jpg".format(uuid.uuid4())), seg_person)
             image.show(seg_person)
+
+
+def case_cut_data():
+    for dir in os.listdir("man_dataset"):
+        for file in os.listdir(os.path.join("man_dataset", dir)):
+            img_path = os.path.join("man_dataset", dir, file)
+            img = image.load_img(img_path)
+
+            # img = img[img.shape[0]//5:img.shape[0]]
+            cv2.imwrite(img_path, img)
+            # image.show(img)

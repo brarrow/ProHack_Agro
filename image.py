@@ -62,7 +62,7 @@ def get_white_regions(img, tr=110):
 
 
 def crop_bottom_part(img, part):
-    cropped_img = img[img.shape[0]//part:img.shape[0]]
+    cropped_img = img[int(img.shape[0]//part):img.shape[0]]
     return cropped_img
 
 
