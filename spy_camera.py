@@ -1,6 +1,5 @@
 import cv2
 
-
 class OpenCVCam(object):
     def __init__(self, source=0):
         self.video_source = source  # for ip-camera source

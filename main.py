@@ -14,14 +14,18 @@ models = {"mobnet": "mobnetv2.pb",
           "xception": "xception.pb"}
 model = DeepLabModel(models["mobnet"])
 
-# cases.case_web_camera(model)
-
 
 # img_path = "man_dataset/form/c474c227-b16b-4eec-943a-d698e0162007.jpg"
 # cases.case_test_image(img_path)
 
 # cases.case_images(model)
 
-# cases.case_spy_cameras(model)
+cases.case_spy_cameras(model)
 
-cases.case_video(model)
+# cases.case_video(model)
+
+cam1 = OpenCVCam("rtsp://10.100.43.15:554/stander/livestream/0/0")
+cam2 = OpenCVCam("rtsp://10.100.43.16:554/stander/livestream/0/0")
+
+# cases.case_write_video("cam2", cam2)
+# cases.case_segment_video(model)

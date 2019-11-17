@@ -8,6 +8,11 @@ from status import Status
 from persons import Person
 import uuid
 import detect_shapes
+from spy_camera import OpenCVCam
+from keras.models import load_model
+from keras import backend as K
+import keras
+
 status_ = Status()
 
 
@@ -40,6 +45,7 @@ def detect_helmets(seg_person):
     # print(np.sum(tmp)/(tmp.shape[0] * tmp.shape[1] * 3))
     if 11 < np.sum(tmp)/(tmp.shape[0] * tmp.shape[1] * 3) < 25:
         print("YES! HELMET!")
+        exit()
         return True
     else:
         return False
@@ -48,13 +54,25 @@ def detect_helmets(seg_person):
 def detect_costume(seg_person):
     tmp = seg_person.copy()
     tmp = image.crop_middle_part(tmp, 5, 5)
-    if detect_shapes.get_shapes(tmp):
+    if detect_shapes.get_shapes_for_costume(tmp):
         print("YES! COSTUME!")
+        exit()
         return True
     else:
         return False
 
 
+def detect_glasses(seg_person):
+    tmp = seg_person.copy()
+    tmp = image.crop_top_part(tmp, 6)
+    detect_shapes.get_shapes_for_glasses(tmp)
+
+
+def detect_cnn_costume(seg_person, keras_model):
+        img0 = cv2.resize(seg_person, (100, 256))
+        img_x = img0.astype('float32') / 255.0
+        new = keras_model.predict_proba(img_x.reshape(1, 256, 100, 3))
+        print("Sotr: ", new[0]*100)
 
 def cut_head(person):
 
@@ -62,7 +80,11 @@ def cut_head(person):
 
 
 def segm_person(model, cam, imshow_name="image"):
-    _, original_im = cam.read()
+    if isinstance(cam, OpenCVCam):
+        original_im = cam.get_image()
+    else:
+        _, original_im = cam.read()
+
     if original_im is None:
         return
     resized_im, seg_map = model.run(original_im)
