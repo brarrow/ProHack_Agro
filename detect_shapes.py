@@ -37,9 +37,9 @@ def get_shapes_for_costume(img):
 			continue
 		shape = sd.detect(c)
 		if shape == "rectangle":
-			if sd.check_color(blurred, c) > 80:
+			if sd.check_color(blurred, c) > 60:
 				count_rects += 1
-			if count_rects > 4:
+			if count_rects > 5:
 				return True # costume found
 			# multiply the contour (x, y)-coordinates by the resize ratio,
 			# then draw the contours and the name of the shape on the image

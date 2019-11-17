@@ -3,10 +3,14 @@
 # Currently %tensorflow_version 2.x installs beta1, which doesn't work here.
 # %tensorflow_version can likely be used after 2.0rc0
 # For running inference on the TF-Hub module.
+import urllib
+import urllib.request
+
 import tensorflow as tf
 
-import tensorflow_hub as hub
+tf.enable_eager_execution()
 
+import tensorflow_hub as hub
 # For downloading the image.
 import matplotlib.pyplot as plt
 import tempfile
@@ -166,7 +170,7 @@ def draw_boxes(image, boxes, class_names, scores, max_boxes=10, min_score=0.1):
     font = ImageFont.load_default()
 
   for i in range(min(boxes.shape[0], max_boxes)):
-    if scores[i] >= min_score:
+    if class_names[i].decode("ascii") == "Glasses" or class_names[i].decode("ascii") == "Man":
       ymin, xmin, ymax, xmax = tuple(boxes[i])
       display_str = "{}: {}%".format(class_names[i].decode("ascii"),
                                      int(100 * scores[i]))
@@ -182,14 +186,18 @@ def draw_boxes(image, boxes, class_names, scores, max_boxes=10, min_score=0.1):
           font,
           display_str_list=[display_str])
       np.copyto(image, np.array(image_pil))
+      response = urllib.request.urlopen('http://10.50.11.49:5000/glass.json?xmin={}&ymin={}&xmax={}&ymax={}'.format(
+          xmin, ymin, xmax, ymax
+      ))
   return image
 
 
 module_handle = "https://tfhub.dev/google/faster_rcnn/openimages_v4/inception_resnet_v2/1"
 # param ["https://tfhub.dev/google/openimages_v4/ssd/mobilenet_v2/1",
 # "https://tfhub.dev/google/faster_rcnn/openimages_v4/inception_resnet_v2/1"]
+print("Load ,,,")
 detector = hub.load(module_handle).signatures['default']
-
+print("eeeeeee")
 
 def run_detector(detector, img):
     tfImage = np.array(img)[:, :, 0:3]
@@ -216,19 +224,20 @@ def run_detector(detector, img):
 
 
 # To capture video from webcam.
-cap = cv2.VideoCapture(0)
+# cap = cv2.VideoCapture(0)
 
 # cnn = CNN("C:\\Users\\Igor\\work\\prom_hack\\ProHack_Agro\\tf\\saved_model.pb")
 
-while True:
+def run(image):
     # Read the frame
-    _, img = cap.read()
+    # _, img = cap.read()
     # Convert to grayscale
-    start_time = time.time()
-    cnn.test(cap.read()[1])
-    run_detector(detector, cap.read()[1])
-    end_time = time.time()
-    print("Inference time:")
+    # start_time = time.time()
+    # cnn.test(cap.read()[1])
+    # tf.enable_eager_execution()
+    run_detector(detector, image)
+    # tf.disable_eager_execution()
+    # tf.disnable_eager_execution()
 
-# Release the VideoCapture object
-cap.release()
+    # end_time = time.time()
+    print("Inference time:")

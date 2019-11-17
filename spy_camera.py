@@ -29,12 +29,18 @@ class VideoStreamWidget(object):
     def update(self):
         # Read the next frame from the stream in a different thread
         while True:
-            if self.capture.isOpened():
-                (self.status, self.frame) = self.capture.read()
+            try:
+                if self.capture.isOpened():
+                    (self.status, self.frame) = self.capture.read()
+            except:
+                print("Exc in update video.")
 
     def get_image(self):
-        if self.status:
-            return self.frame
+        try:
+            if self.status:
+                return self.frame
+        except:
+            print("Error while get image.")
 
     def show_frame(self):
         # Display frames in main program

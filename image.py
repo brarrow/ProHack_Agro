@@ -49,7 +49,7 @@ def cut_holst_from_bin_roi(holst, img, padding=0):
     maxy = 0 if maxy > sh[1] else maxy
     seg_map = holst[minx:maxx, miny:maxy]
     img = img[minx:maxx, miny:maxy]
-    return bitwise_images(img, seg_map)
+    return bitwise_images(img, seg_map), (minx, miny, maxx, maxy)
 
 
 def get_white_regions(img, tr=110):
